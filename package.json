@@ -13,6 +13,7 @@
   "dependencies": {
     "@google/genai": "^1.29.0",
     "@kount/kount-web-client-sdk": "^2.2.3",
+    "@measured/puck": "^0.20.2",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",
     "clsx": "^2.1.1",

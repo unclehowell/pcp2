@@ -121,20 +121,24 @@ export const ClaimForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-8 shadow-xl border border-gray-100">
+    <div className="max-w-2xl mx-auto bg-white p-8 border-4 border-brand-primary shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
       {/* Progress Indicator */}
       <div className="flex justify-between mb-12 relative">
-        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -translate-y-1/2 z-0" />
+        <div className="absolute top-1/2 left-0 w-full h-1 bg-brand-primary -translate-y-1/2 z-0" />
         {STEPS.map((step, index) => (
           <div key={step.id} className="relative z-10 flex flex-col items-center">
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors ${
-                index <= currentStep ? 'bg-brand-primary border-brand-primary text-white' : 'bg-white border-gray-200 text-gray-400'
+              className={`w-12 h-12 flex items-center justify-center border-4 transition-all transform ${
+                index <= currentStep 
+                  ? 'bg-brand-accent border-brand-primary text-brand-primary scale-110 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' 
+                  : 'bg-white border-brand-primary text-gray-400'
               }`}
             >
-              {index < currentStep ? <CheckCircle2 className="w-6 h-6" /> : index + 1}
+              <span className="font-display font-bold text-xl italic">
+                {index < currentStep ? <CheckCircle2 className="w-6 h-6" /> : index + 1}
+              </span>
             </div>
-            <span className={`text-[10px] uppercase tracking-widest mt-2 font-bold ${index <= currentStep ? 'text-brand-primary' : 'text-gray-400'}`}>
+            <span className={`text-[10px] uppercase tracking-widest mt-3 font-black ${index <= currentStep ? 'text-brand-primary' : 'text-gray-400'}`}>
               {step.title}
             </span>
           </div>
@@ -153,57 +157,57 @@ export const ClaimForm: React.FC = () => {
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500">First Name</label>
+                  <label className="text-xs font-black uppercase tracking-wider text-brand-primary">First Name</label>
                   <input
                     required
                     name="first_name"
                     value={formData.first_name}
                     onChange={handleChange}
-                    className="w-full p-3 border border-gray-200 focus:border-brand-accent outline-none"
+                    className="w-full p-4 border-4 border-brand-primary focus:bg-brand-accent outline-none font-bold uppercase transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Last Name</label>
+                  <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Last Name</label>
                   <input
                     required
                     name="last_name"
                     value={formData.last_name}
                     onChange={handleChange}
-                    className="w-full p-3 border border-gray-200 focus:border-brand-accent outline-none"
+                    className="w-full p-4 border-4 border-brand-primary focus:bg-brand-accent outline-none font-bold uppercase transition-colors"
                   />
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Date of Birth</label>
+                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Date of Birth</label>
                 <input
                   required
                   type="date"
                   name="date_of_birth"
                   value={formData.date_of_birth}
                   onChange={handleChange}
-                  className="w-full p-3 border border-gray-200 focus:border-brand-accent outline-none"
+                  className="w-full p-4 border-4 border-brand-primary focus:bg-brand-accent outline-none font-bold uppercase transition-colors"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Phone Number</label>
+                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Phone Number</label>
                 <input
                   required
                   type="tel"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full p-3 border border-gray-200 focus:border-brand-accent outline-none"
+                  className="w-full p-4 border-4 border-brand-primary focus:bg-brand-accent outline-none font-bold uppercase transition-colors"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Email Address</label>
+                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Email Address</label>
                 <input
                   required
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full p-3 border border-gray-200 focus:border-brand-accent outline-none"
+                  className="w-full p-4 border-4 border-brand-primary focus:bg-brand-accent outline-none font-bold uppercase transition-colors"
                 />
               </div>
             </motion.div>
@@ -218,43 +222,43 @@ export const ClaimForm: React.FC = () => {
               className="space-y-4"
             >
               <div className="space-y-1">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Building Number / Name</label>
+                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Building Number / Name</label>
                 <input
                   required
                   name="buildingNumber"
                   value={formData.buildingNumber}
                   onChange={handleChange}
-                  className="w-full p-3 border border-gray-200 focus:border-brand-accent outline-none"
+                  className="w-full p-4 border-4 border-brand-primary focus:bg-brand-accent outline-none font-bold uppercase transition-colors"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Street Name</label>
+                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Street Name</label>
                 <input
                   required
                   name="thoroughfare"
                   value={formData.thoroughfare}
                   onChange={handleChange}
-                  className="w-full p-3 border border-gray-200 focus:border-brand-accent outline-none"
+                  className="w-full p-4 border-4 border-brand-primary focus:bg-brand-accent outline-none font-bold uppercase transition-colors"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-500">City / Town</label>
+                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">City / Town</label>
                 <input
                   required
                   name="townOrCity"
                   value={formData.townOrCity}
                   onChange={handleChange}
-                  className="w-full p-3 border border-gray-200 focus:border-brand-accent outline-none"
+                  className="w-full p-4 border-4 border-brand-primary focus:bg-brand-accent outline-none font-bold uppercase transition-colors"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Postcode</label>
+                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Postcode</label>
                 <input
                   required
                   name="postcode"
                   value={formData.postcode}
                   onChange={handleChange}
-                  className="w-full p-3 border border-gray-200 focus:border-brand-accent outline-none"
+                  className="w-full p-4 border-4 border-brand-primary focus:bg-brand-accent outline-none font-bold uppercase transition-colors"
                 />
               </div>
             </motion.div>
@@ -268,41 +272,49 @@ export const ClaimForm: React.FC = () => {
               exit={{ opacity: 0, x: -20 }}
               className="space-y-6"
             >
-              <div className="bg-gray-50 p-6 space-y-4 border border-gray-100">
-                <h3 className="font-serif text-xl border-b border-gray-200 pb-2">Summary</h3>
-                <div className="grid grid-cols-2 gap-y-2 text-sm">
-                  <span className="text-gray-500">Name:</span>
-                  <span className="font-bold">{formData.first_name} {formData.last_name}</span>
-                  <span className="text-gray-500">DOB:</span>
-                  <span className="font-bold">{formData.date_of_birth}</span>
-                  <span className="text-gray-500">Contact:</span>
-                  <span className="font-bold">{formData.email} / {formData.phone}</span>
-                  <span className="text-gray-500">Address:</span>
-                  <span className="font-bold">
-                    {formData.buildingNumber} {formData.thoroughfare}, {formData.townOrCity}, {formData.postcode}
-                  </span>
+              <div className="bg-brand-accent/20 p-6 space-y-4 border-4 border-brand-primary">
+                <h3 className="font-display font-bold text-2xl uppercase italic border-b-4 border-brand-primary pb-2">Summary</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-bold uppercase">
+                  <div>
+                    <span className="text-gray-500 block text-[10px]">Name:</span>
+                    <span className="text-lg leading-none">{formData.first_name} {formData.last_name}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 block text-[10px]">DOB:</span>
+                    <span className="text-lg leading-none">{formData.date_of_birth}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 block text-[10px]">Contact:</span>
+                    <span className="text-lg leading-none">{formData.email} <br /> {formData.phone}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 block text-[10px]">Address:</span>
+                    <span className="text-lg leading-none">
+                      {formData.buildingNumber} {formData.thoroughfare}, {formData.townOrCity}, {formData.postcode}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <p className="text-xs text-gray-500 italic">
-                By submitting this form, you agree to our terms and conditions and authorize Jigsaw Claims Ltd to process your enquiry.
+              <p className="text-[10px] font-black uppercase text-brand-primary leading-tight">
+                BY SUBMITTING THIS FORM, YOU AGREE TO OUR TERMS AND CONDITIONS AND AUTHORIZE JIGSAW CLAIMS LTD TO PROCESS YOUR ENQUIRY.
               </p>
             </motion.div>
           )}
         </AnimatePresence>
 
         {error && (
-          <div className="flex items-center gap-2 p-4 bg-red-50 text-brand-danger text-sm border border-red-100">
+          <div className="flex items-center gap-2 p-4 bg-brand-secondary text-brand-primary font-bold uppercase text-sm border-4 border-brand-primary">
             <AlertCircle className="w-5 h-5 flex-shrink-0" />
             <p>{error}</p>
           </div>
         )}
 
-        <div className="flex justify-between pt-8 border-t border-gray-100">
+        <div className="flex justify-between pt-8 border-t-4 border-brand-primary">
           {currentStep > 0 ? (
             <button
               type="button"
               onClick={prevStep}
-              className="flex items-center gap-2 text-gray-500 hover:text-brand-primary transition-colors font-bold uppercase tracking-widest text-xs"
+              className="flex items-center gap-2 text-brand-primary hover:text-brand-secondary transition-colors font-black uppercase tracking-widest text-xs"
             >
               <ChevronLeft className="w-4 h-4" /> Back
             </button>
@@ -314,7 +326,7 @@ export const ClaimForm: React.FC = () => {
             <button
               type="button"
               onClick={nextStep}
-              className="btn-primary flex items-center gap-2"
+              className="brutal-btn flex items-center gap-2"
             >
               Next <ChevronRight className="w-4 h-4" />
             </button>
@@ -322,7 +334,7 @@ export const ClaimForm: React.FC = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="btn-primary bg-brand-accent hover:bg-brand-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="brutal-btn-secondary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>

@@ -11,6 +11,7 @@ import { News } from './pages/News';
 import { About } from './pages/About';
 import { Claim } from './pages/Claim';
 import { ThankYou } from './pages/ThankYou';
+import { Editor } from './pages/Editor';
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/claim" element={<Claim />} />
             <Route path="/thank-you" element={<ThankYou />} />
+            <Route path="/edit" element={<Editor />} />
           </Routes>
         </Layout>
       </Router>

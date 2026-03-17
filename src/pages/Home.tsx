@@ -1,42 +1,53 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Scale, Gavel, Users, Newspaper } from 'lucide-react';
+import { ArrowRight, Scale, Gavel, Users, Zap, CheckCircle2 } from 'lucide-react';
 import { NEWS_ITEMS } from '../constants';
+import { Render } from "@measured/puck";
+import { config } from "../puck.config";
 
 export const Home: React.FC = () => {
+  const puckData = localStorage.getItem("puck-data");
+  const data = puckData ? JSON.parse(puckData) : null;
+
+  if (data && data.content && data.content.length > 0) {
+    return <Render config={config} data={data} />;
+  }
+
   return (
-    <div className="space-y-24 pb-24">
+    <div className="space-y-32 pb-32">
       {/* Hero Section */}
-      <section className="relative h-[80vh] flex items-center overflow-hidden bg-brand-primary">
-        <div className="absolute inset-0 opacity-40">
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-black">
+        <div className="absolute inset-0 opacity-60">
           <img 
-            src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=2070" 
+            src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&q=80&w=2070" 
             alt="Car Finance" 
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-primary via-brand-primary/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
         </div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-2xl space-y-8"
+            className="max-w-4xl space-y-10"
           >
-            <h1 className="text-5xl md:text-7xl font-serif text-white leading-tight">
-              Were You Mis-Sold <span className="text-brand-accent">Car Finance?</span>
+            <h1 className="text-7xl md:text-9xl font-display font-black text-white leading-[0.85] tracking-tight uppercase">
+              Were You <br />
+              <span className="text-brand-accent">Mis-Sold</span> <br />
+              Car Finance?
             </h1>
-            <p className="text-xl text-gray-300 font-light leading-relaxed">
-              Join thousands of motorists reclaiming what they're owed. The FCA is investigating secret commissions—you could be entitled to thousands.
+            <p className="text-2xl text-white font-bold max-w-2xl leading-tight">
+              Join thousands reclaiming what they’re owed. The FCA is investigating secret commissions—you could be entitled to thousands.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/claim" className="btn-primary bg-brand-accent hover:bg-white hover:text-brand-primary">
+            <div className="flex flex-col sm:flex-row gap-6 pt-4">
+              <Link to="/claim" className="brutal-btn text-2xl px-12 py-6">
                 Check Your Claim
               </Link>
-              <Link to="/about" className="btn-outline border-white text-white hover:bg-white hover:text-brand-primary">
+              <Link to="/about" className="brutal-btn-secondary text-2xl px-12 py-6">
                 Learn More
               </Link>
             </div>
@@ -44,51 +55,74 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
+      {/* Marquee 2 */}
+      <div className="marquee border-y border-slate-200">
+        <div className="flex gap-12 animate-marquee">
+          {[...Array(10)].map((_, i) => (
+            <span key={i} className="flex items-center gap-2">
+              <Zap className="w-4 h-4 fill-current" /> NO WIN NO FEE* • FCA INVESTIGATION • RECLAIM NOW
+            </span>
+          ))}
+        </div>
+      </div>
+
       {/* What is PCP Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className="space-y-6">
-            <h2 className="text-4xl md:text-5xl font-serif">What is PCP Mis-selling?</h2>
-            <p className="text-lg text-gray-600 leading-relaxed">
-              Personal Contract Purchase (PCP) is the most common way to finance a car in the UK. However, many lenders and dealers used "discretionary commission arrangements" to inflate interest rates without telling customers.
-            </p>
-            <p className="text-lg text-gray-600 leading-relaxed">
-              This meant the more interest you paid, the more commission the dealer earned. This conflict of interest was hidden from you, and now the FCA is stepping in to ensure justice is served.
-            </p>
-            <ul className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          <div className="space-y-10">
+            <h2 className="text-6xl md:text-8xl font-display font-black uppercase leading-none tracking-tight">
+              What is <br />
+              <span className="text-brand-secondary">PCP Mis-selling?</span>
+            </h2>
+            <div className="space-y-6 text-xl font-bold leading-relaxed">
+              <p>
+                Personal Contract Purchase (PCP) is the most common way to finance a car in the UK. However, many lenders and dealers used "discretionary commission arrangements" to inflate interest rates without telling customers.
+              </p>
+              <p className="text-gray-500">
+                This meant the more interest you paid, the more commission the dealer earned. This conflict of interest was hidden from you, and now the FCA is stepping in to ensure justice is served.
+              </p>
+            </div>
+            <ul className="space-y-6">
               {[
                 'Hidden commissions paid to dealers',
                 'Inflated interest rates to boost profits',
                 'Lack of transparency in contract terms',
                 'Unfair financial burden on consumers'
               ].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 text-gray-700 font-medium">
-                  <CheckCircle2 className="text-brand-accent w-5 h-5" /> {item}
+                <li key={i} className="flex items-center gap-4 text-2xl font-black uppercase italic">
+                  <div className="bg-brand-accent p-1 rounded-full">
+                    <CheckCircle2 className="text-white w-6 h-6" />
+                  </div>
+                  {item}
                 </li>
               ))}
             </ul>
           </div>
           <div className="relative">
-            <img 
-              src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=2070" 
-              alt="Legal Documentation" 
-              className="shadow-2xl grayscale hover:grayscale-0 transition-all duration-700"
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute -bottom-8 -left-8 bg-brand-accent p-8 text-white hidden md:block">
-              <p className="text-3xl font-serif">£1,100</p>
-              <p className="text-xs uppercase tracking-widest font-bold">Average Claim Value</p>
+            <div className="rounded-3xl overflow-hidden shadow-2xl border border-slate-200">
+              <img 
+                src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=2070" 
+                alt="Happy Family" 
+                className="w-full transition-all duration-700"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="absolute -bottom-10 -right-10 bg-white p-10 rounded-2xl shadow-2xl border border-slate-100 hidden md:block">
+              <p className="text-6xl font-display font-black leading-none text-brand-secondary">£1,100</p>
+              <p className="text-sm uppercase font-bold tracking-widest text-slate-500">Average Claim Value</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Why This Matters (Campaign Tone) */}
-      <section className="bg-gray-50 py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-16">
-          <div className="max-w-3xl mx-auto space-y-4">
-            <h2 className="text-4xl md:text-5xl font-serif">Why This Matters</h2>
-            <p className="text-gray-600">This isn't just about money—it's about corporate accountability and consumer justice.</p>
+      {/* Why This Matters */}
+      <section className="bg-slate-900 py-32 border-y border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-20">
+          <div className="max-w-4xl mx-auto space-y-6">
+            <h2 className="text-6xl md:text-8xl font-display font-black uppercase tracking-tight leading-none text-white">
+              Why This <span className="text-brand-accent">Matters</span>
+            </h2>
+            <p className="text-2xl font-medium text-slate-400">This isn't just about money—it's about corporate accountability and consumer justice.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {[
@@ -96,96 +130,53 @@ export const Home: React.FC = () => {
               { icon: Gavel, title: 'Legal Precedent', desc: 'Setting a standard that protects future car buyers from hidden fees.' },
               { icon: Users, title: 'Community Power', desc: 'Joining a collective movement of thousands seeking what they are owed.' }
             ].map((item, i) => (
-              <div key={i} className="space-y-4 p-8 bg-white shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                <item.icon className="w-12 h-12 mx-auto text-brand-accent" />
-                <h3 className="text-xl font-serif">{item.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+              <div key={i} className="space-y-6 p-10 bg-slate-800/50 backdrop-blur-sm rounded-3xl border border-slate-700 hover:bg-slate-800 transition-all">
+                <item.icon className="w-16 h-16 mx-auto text-brand-accent" />
+                <h3 className="text-3xl font-display font-black uppercase text-white">{item.title}</h3>
+                <p className="text-lg font-medium text-slate-400 leading-tight">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Latest News & Updates */}
+      {/* Latest News */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-end mb-12">
-          <div className="space-y-2">
-            <h2 className="text-4xl font-serif">Latest Updates</h2>
-            <p className="text-gray-500">Stay informed with the latest campaign news.</p>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
+          <div className="space-y-4">
+            <h2 className="text-6xl md:text-8xl font-display font-black uppercase leading-none tracking-tight">
+              Latest <span className="text-brand-accent">Updates</span>
+            </h2>
+            <p className="text-2xl font-bold text-gray-500">Stay informed with the latest campaign news.</p>
           </div>
-          <Link to="/news" className="text-brand-accent font-bold uppercase tracking-widest text-xs flex items-center gap-2 hover:gap-4 transition-all">
-            View All News <ArrowRight className="w-4 h-4" />
+          <Link to="/news" className="brutal-btn py-3 px-8 flex items-center gap-2">
+            View All News <ArrowRight className="w-6 h-6" />
           </Link>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {NEWS_ITEMS.map((item) => (
-            <article key={item.id} className="group cursor-pointer">
-              <div className="aspect-video bg-gray-100 mb-6 overflow-hidden">
+            <article key={item.id} className="group cursor-pointer space-y-6">
+              <div className="aspect-video rounded-2xl overflow-hidden shadow-lg border border-slate-100">
                 <img 
-                  src={`https://picsum.photos/seed/${item.slug}/800/450`} 
+                  src={item.image} 
                   alt={item.title} 
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   referrerPolicy="no-referrer"
                 />
               </div>
-              <div className="space-y-3">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-brand-accent px-2 py-1 bg-brand-accent/10">
+              <div className="space-y-4">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-brand-accent px-3 py-1 bg-brand-accent/10 rounded-full inline-block">
                   {item.category}
                 </span>
-                <h3 className="text-xl font-serif group-hover:text-brand-accent transition-colors">
+                <h3 className="text-3xl font-display font-black uppercase group-hover:text-brand-secondary transition-colors leading-none">
                   {item.title}
                 </h3>
-                <p className="text-sm text-gray-500 line-clamp-2">{item.excerpt}</p>
+                <p className="text-lg font-medium text-slate-500 line-clamp-2">{item.excerpt}</p>
               </div>
             </article>
           ))}
         </div>
       </section>
-
-      {/* Real Stories / Case Studies */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 border-t border-gray-100">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className="relative order-2 lg:order-1">
-            <div className="aspect-square bg-gray-200">
-              <img 
-                src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=2000" 
-                alt="Consumer Success" 
-                className="w-full h-full object-cover grayscale"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            <div className="absolute top-8 right-8 bg-white p-6 shadow-xl max-w-xs">
-              <p className="italic text-gray-600 mb-4">"I had no idea I was being overcharged. PCP Refund helped me get back £2,400 I didn't even know was missing."</p>
-              <p className="font-bold text-sm">— David S., Manchester</p>
-            </div>
-          </div>
-          <div className="space-y-8 order-1 lg:order-2">
-            <h2 className="text-4xl md:text-5xl font-serif">Real Stories</h2>
-            <p className="text-lg text-gray-600 leading-relaxed">
-              Thousands of people have already started their journey to reclaiming their money. Each case is a step towards a fairer financial system for everyone.
-            </p>
-            <div className="space-y-6">
-              {[
-                { name: 'Sarah L.', amount: '£1,850', story: 'Mis-sold commission on a 2018 BMW finance deal.' },
-                { name: 'Mark T.', amount: '£3,100', story: 'Overcharged interest on two consecutive car agreements.' }
-              ].map((story, i) => (
-                <div key={i} className="flex gap-4 p-6 bg-gray-50 border-l-4 border-brand-accent">
-                  <div className="flex-grow">
-                    <p className="font-bold text-lg">{story.name} recovered {story.amount}</p>
-                    <p className="text-sm text-gray-500">{story.story}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };
-
-const CheckCircle2 = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
