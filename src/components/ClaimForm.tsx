@@ -17,6 +17,13 @@ export const ClaimForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState('');
+  
+  console.log("--- BROWSER: RENDERING STEP ---", currentStep);
+  console.log("--- BROWSER: SUBMITTING STATE ---", isSubmitting);
+  console.log("--- BROWSER: ERROR STATE ---", error);
+  console.log("--- BROWSER: SESSION ID STATE ---", sessionId);
+  console.log("--- BROWSER: FORM DATA STATE ---", formData);
+  console.log("--- BROWSER: STEPS ---", STEPS);
 
   const [formData, setFormData] = useState({
     first_name: '',
@@ -31,12 +38,14 @@ export const ClaimForm: React.FC = () => {
   });
 
   useEffect(() => {
+    console.log("--- BROWSER: FORM MOUNTED ---");
     // Initialize Kount Session
     let sid = sessionStorage.getItem('kount_session_id');
     if (!sid) {
       sid = generateSessionId();
       sessionStorage.setItem('kount_session_id', sid);
     }
+    console.log("--- BROWSER: SESSION ID INITIALIZED ---", sid);
     setSessionId(sid);
 
     const kountConfig = {
@@ -48,7 +57,8 @@ export const ClaimForm: React.FC = () => {
         'collect-end': () => console.log('Kount collection completed')
       }
     };
-
+    console.log("--- BROWSER: KOUNT CONFIG ---", kountConfig);
+    
     try {
       kountSDK(kountConfig, sid);
     } catch (e) {
@@ -57,23 +67,42 @@ export const ClaimForm: React.FC = () => {
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(`--- BROWSER: INPUT CHANGE [${e.target.name}] ---`, e.target.value);
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, STEPS.length - 1));
-  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
+  const nextStep = () => {
+    console.log("--- BROWSER: NEXT STEP ---", currentStep + 1);
+    setCurrentStep((prev) => Math.min(prev + 1, STEPS.length - 1));
+  };
+  const prevStep = () => {
+    console.log("--- BROWSER: PREV STEP ---", currentStep - 1);
+    setCurrentStep((prev) => Math.max(prev - 1, 0));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("--- BROWSER: SUBMITTING FORM ---", formData);
     setIsSubmitting(true);
     setError(null);
 
     try {
       const clientIp = await getClientIp();
-      const userAgent = navigator.userAgent;
+      console.log("Client IP:", clientIp);
+    } catch (e) {
+      console.error("--- BROWSER: IP FETCH ERROR ---", e);
+    }
+    const userAgent = navigator.userAgent;
+      console.log("User Agent:", userAgent);
       const affiliateId = import.meta.env.VITE_AFFILIATE_ID || 'default';
       const apiKey = import.meta.env.VITE_API_KEY || 'demo-key';
-
+      
+      console.log("--- BROWSER: ENV CHECK ---");
+      console.log("Affiliate ID present:", !!import.meta.env.VITE_AFFILIATE_ID);
+      console.log("API Key present:", !!import.meta.env.VITE_API_KEY);
+      
+      console.log("Session ID:", sessionId);
+      
       const payload = {
         first_name: formData.first_name,
         last_name: formData.last_name,
@@ -90,30 +119,50 @@ export const ClaimForm: React.FC = () => {
           postcode: formData.postcode
         }
       };
-
+      
+      console.log("--- BROWSER: SENDING PAYLOAD ---", payload);
+      console.log("URL:", `/api/submit-claim`);
+      
+      const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      };
+      console.log("Headers:", headers);
+      
+      console.log("Method:", 'POST');
+      
+      const body = JSON.stringify(payload);
+      console.log("Body:", body);
+      
       const response = await fetch(`/api/submit-claim`, {
         method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
+        headers: headers,
+        body: body
       });
 
-      let result;
+      console.log("--- BROWSER: RESPONSE RECEIVED ---");
+      console.log("Response:", response);
+      console.log("Status:", response.status);
       const contentType = response.headers.get("content-type");
+      console.log("Content-Type:", contentType);
+
+      let result;
       if (contentType && contentType.includes("application/json")) {
         const resText = await response.text();
+        console.log("--- BROWSER: RAW RESPONSE ---", resText);
         if (!resText) {
           throw new Error("Server returned an empty JSON response.");
         }
         try {
           result = JSON.parse(resText);
+          console.log("--- BROWSER: RESULT ---", result);
         } catch (e: any) {
+          console.error("--- BROWSER: PARSE ERROR ---", e);
           throw new Error(`Failed to parse server response: ${e.message}`);
         }
       } else {
         const text = await response.text();
+        console.log("--- BROWSER: NON-JSON RESPONSE ---", text);
         throw new Error(`Server returned non-JSON response (${response.status}): ${text.slice(0, 100)}`);
       }
 
@@ -129,7 +178,9 @@ export const ClaimForm: React.FC = () => {
         throw new Error(result.message || 'Submission failed. Please try again.');
       }
     } catch (err: any) {
+      console.error("--- BROWSER: SUBMISSION ERROR ---", err);
       setError(err.message);
+      console.log("--- BROWSER: RESETTING SUBMITTING STATE ---");
       setIsSubmitting(false);
     }
   };
@@ -317,9 +368,14 @@ export const ClaimForm: React.FC = () => {
         </AnimatePresence>
 
         {error && (
-          <div className="flex items-center gap-2 p-4 bg-brand-secondary text-brand-primary font-bold uppercase text-sm border-4 border-brand-primary">
-            <AlertCircle className="w-5 h-5 flex-shrink-0" />
-            <p>{error}</p>
+          <div className="flex flex-col gap-2 p-4 bg-brand-secondary text-brand-primary font-bold uppercase text-sm border-4 border-brand-primary">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <p>{error}</p>
+            </div>
+            <div className="mt-2 text-[10px] border-t border-brand-primary pt-2">
+              <p>Debug: <a href="/api/ping" target="_blank" className="underline">Test Functions Status</a></p>
+            </div>
           </div>
         )}
 

@@ -14,6 +14,11 @@ export async function onRequestPost(context) {
     }
     const body = JSON.parse(text);
     
+    console.log("--- OUTGOING REQUEST TO UPSTREAM ---");
+    console.log("URL:", `https://r2r.theclaimsystem.co.uk/api/v1/affiliate/${affiliateId}`);
+    console.log("Affiliate ID:", affiliateId);
+    console.log("Payload:", JSON.stringify(body, null, 2));
+
     const response = await fetch(`https://r2r.theclaimsystem.co.uk/api/v1/affiliate/${affiliateId}`, {
       method: 'POST',
       headers: {
@@ -24,9 +29,14 @@ export async function onRequestPost(context) {
       body: JSON.stringify(body)
     });
 
+    console.log("--- UPSTREAM RESPONSE ---");
+    console.log("Status:", response.status);
+
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
       const resText = await response.text();
+      console.log("Body:", resText);
+      
       if (!resText) {
         return new Response(JSON.stringify({ message: "Empty response from upstream" }), {
           status: response.status,
@@ -47,6 +57,7 @@ export async function onRequestPost(context) {
       }
     } else {
       const resText = await response.text();
+      console.log("Non-JSON Body:", resText);
       return new Response(JSON.stringify({ message: `Upstream error: ${resText.slice(0, 100)}` }), {
         status: response.status,
         headers: { 'Content-Type': 'application/json' }
