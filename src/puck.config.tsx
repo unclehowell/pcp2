@@ -45,7 +45,7 @@ export const config: Config<Props> = {
       defaultProps: {
         title: "Were You Mis-Sold Car Finance?",
         subtitle: "Join thousands reclaiming what they’re owed. Bold, fast, and effective.",
-        ctaText: "Check Your Claim",
+        ctaText: "Check Eligibility",
         ctaLink: "/claim",
       },
       render: ({ title, subtitle, ctaText, ctaLink }) => (

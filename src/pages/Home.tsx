@@ -45,7 +45,7 @@ export const Home: React.FC = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-6 pt-4">
               <Link to="/claim" className="brutal-btn text-2xl px-12 py-6">
-                Check Your Claim
+                Check Eligibility
               </Link>
               <Link to="/about" className="brutal-btn-secondary text-2xl px-12 py-6">
                 Learn More
@@ -60,7 +60,7 @@ export const Home: React.FC = () => {
         <div className="flex gap-12 animate-marquee">
           {[...Array(10)].map((_, i) => (
             <span key={i} className="flex items-center gap-2">
-              <Zap className="w-4 h-4 fill-current" /> NO WIN NO FEE* • FCA INVESTIGATION • RECLAIM NOW
+              <Zap className="w-4 h-4 fill-current" /> NO WIN NO FEE* • FCA INVESTIGATION • CHECK ELIGIBILITY
             </span>
           ))}
         </div>

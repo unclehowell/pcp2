@@ -9,7 +9,7 @@ export const Claim: React.FC = () => {
       <section className="bg-slate-900 text-white py-24 px-4 border-b border-slate-800">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-6xl md:text-8xl font-display font-black uppercase leading-none mb-6">
-            Check Your <br />Claim
+            Check Your <br />Eligibility
           </h1>
           <p className="text-xl md:text-2xl text-brand-accent max-w-2xl mx-auto font-medium uppercase tracking-tight">
             COMPLETE OUR SIMPLE ENQUIRY FORM TO SEE IF YOU ARE ELIGIBLE FOR A PCP CAR FINANCE REFUND.
@@ -52,7 +52,7 @@ export const Claim: React.FC = () => {
               <ol className="space-y-4 text-sm font-bold uppercase">
                 <li className="flex gap-3"><span className="font-mono text-xl opacity-60">01.</span> Submit your initial enquiry details.</li>
                 <li className="flex gap-3"><span className="font-mono text-xl opacity-60">02.</span> We review your eligibility instantly.</li>
-                <li className="flex gap-3"><span className="font-mono text-xl opacity-60">03.</span> Our team contacts you to finalize the claim.</li>
+                <li className="flex gap-3"><span className="font-mono text-xl opacity-60">03.</span> Our team contacts you to finalize the process.</li>
               </ol>
             </div>
           </div>

@@ -40,7 +40,7 @@ export const ClaimForm: React.FC = () => {
     setSessionId(sid);
 
     const kountConfig = {
-      clientID: import.meta.env.VITE_KOUNT_CLIENT_ID || '800000', // Fallback for demo
+      clientID: import.meta.env.VITE_KOUNT_CLIENT_ID || '341408861572516', // Updated with user provided KountID
       environment: 'TEST',
       isSinglePageApp: true,
       callbacks: {
@@ -91,12 +91,11 @@ export const ClaimForm: React.FC = () => {
         }
       };
 
-      const response = await fetch(`https://r2r.theclaimsystem.co.uk/api/v1/affiliate/${affiliateId}`, {
+      const response = await fetch(`/api/submit-claim`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'API-KEY': apiKey
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
       });
@@ -341,7 +340,7 @@ export const ClaimForm: React.FC = () => {
                   <Loader2 className="w-4 h-4 animate-spin" /> Submitting...
                 </>
               ) : (
-                <>Submit Claim <CheckCircle2 className="w-4 h-4" /></>
+                <>Check Eligibility <CheckCircle2 className="w-4 h-4" /></>
               )}
             </button>
           )}

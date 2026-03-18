@@ -19,7 +19,7 @@ export const ThankYou: React.FC = () => {
         
         <div className="space-y-4">
           <h1 className="text-5xl font-serif">Thank You</h1>
-          <p className="text-2xl text-gray-600 font-light">Your claim has been received.</p>
+          <p className="text-2xl text-gray-600 font-light">Your eligibility check has been received.</p>
         </div>
 
         <div className="bg-gray-50 p-8 border border-gray-100 text-left space-y-6">

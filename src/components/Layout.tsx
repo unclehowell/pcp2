@@ -11,24 +11,13 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     { name: 'Home', path: '/' },
     { name: 'News', path: '/news' },
     { name: 'About', path: '/about' },
-    { name: 'Claim Now', path: '/claim', highlight: true },
+    { name: 'Check Eligibility', path: '/claim', highlight: true },
   ];
 
   if (location.pathname === '/edit') return <>{children}</>;
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      {/* Marquee */}
-      <div className="marquee">
-        <div className="flex gap-12 animate-marquee">
-          {[...Array(10)].map((_, i) => (
-            <span key={i} className="flex items-center gap-2">
-              <Zap className="w-4 h-4 fill-current" /> FCA INVESTIGATION 2024: RECLAIM NOW
-            </span>
-          ))}
-        </div>
-      </div>
-
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -99,13 +88,13 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       <section className="bg-slate-900 text-white py-32 px-4 border-t border-slate-800">
         <div className="max-w-4xl mx-auto text-center space-y-12">
           <h2 className="text-6xl md:text-8xl font-display font-black uppercase tracking-tight leading-none">
-            Start Your Claim Today
+            Check Your Eligibility Today
           </h2>
           <p className="text-2xl font-medium text-slate-400 max-w-2xl mx-auto">
             Don't let mis-sold car finance go unchallenged. Join thousands of others in the fight for justice.
           </p>
           <Link to="/claim" className="inline-block brutal-btn text-2xl px-12 py-6">
-            Claim Now
+            Check Eligibility
           </Link>
         </div>
       </section>
