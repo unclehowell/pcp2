@@ -100,7 +100,22 @@ export const ClaimForm: React.FC = () => {
         body: JSON.stringify(payload)
       });
 
-      const result = await response.json();
+      let result;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const resText = await response.text();
+        if (!resText) {
+          throw new Error("Server returned an empty JSON response.");
+        }
+        try {
+          result = JSON.parse(resText);
+        } catch (e: any) {
+          throw new Error(`Failed to parse server response: ${e.message}`);
+        }
+      } else {
+        const text = await response.text();
+        throw new Error(`Server returned non-JSON response (${response.status}): ${text.slice(0, 100)}`);
+      }
 
       if (response.ok) {
         if (result.status === 'authentication-required') {

@@ -21,8 +21,19 @@ export const generateSessionId = () => {
 export const getClientIp = async () => {
   try {
     const response = await fetch('https://api.ipify.org?format=json');
-    const data = await response.json();
-    return data.ip;
+    if (!response.ok) return '0.0.0.0';
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const data = await response.json();
+      return data.ip;
+    }
+    const text = await response.text();
+    try {
+      const data = JSON.parse(text);
+      return data.ip;
+    } catch {
+      return '0.0.0.0';
+    }
   } catch (error) {
     console.error('Failed to get IP:', error);
     return '0.0.0.0';

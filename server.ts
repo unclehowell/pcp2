@@ -28,8 +28,24 @@ async function startServer() {
         body: JSON.stringify(req.body)
       });
 
-      const result = await response.json();
-      res.status(response.status).json(result);
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const resText = await response.text();
+        if (!resText) {
+          res.status(response.status).json({ message: "Empty response from upstream" });
+          return;
+        }
+        try {
+          const result = JSON.parse(resText);
+          res.status(response.status).json(result);
+        } catch (e: any) {
+          res.status(500).json({ message: "Invalid JSON from upstream", error: e.message });
+        }
+      } else {
+        const text = await response.text();
+        console.error(`Upstream error (${response.status}):`, text);
+        res.status(response.status).json({ message: `Upstream error: ${text.slice(0, 100)}` });
+      }
     } catch (error: any) {
       console.error("Proxy Error:", error);
       res.status(500).json({ message: "Internal Server Error", error: error.message });

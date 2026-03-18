@@ -109,7 +109,7 @@ export const Home: React.FC = () => {
             </div>
             <div className="absolute -bottom-10 -right-10 bg-white p-10 rounded-2xl shadow-2xl border border-slate-100 hidden md:block">
               <p className="text-6xl font-display font-black leading-none text-brand-secondary">£1,100</p>
-              <p className="text-sm uppercase font-bold tracking-widest text-slate-500">Average Claim Value</p>
+              <p className="text-sm uppercase font-bold tracking-widest text-slate-500">Average Refund Value</p>
             </div>
           </div>
         </div>
