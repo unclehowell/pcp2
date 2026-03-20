@@ -30,7 +30,7 @@ async function startServer() {
         email: data.email,
         client_ip: (Array.isArray(req.headers['x-forwarded-for']) ? req.headers['x-forwarded-for'][0] : (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)) || '1.1.1.1',
         user_agent: data.user_agent || data.useragent || req.headers['user-agent'] || '',
-        session_id: data.session_id || data.sessionid || crypto.randomUUID(),
+        session_id: data.session_id || data.sessionid || data.device_session_id || crypto.randomUUID(),
         device_session_id: data.device_session_id || '',
         signature: data.signature || '',
         addresses: [
@@ -49,6 +49,18 @@ async function startServer() {
         ],
         account_creation_url: 'https://pcp2.pages.dev/claim'
       };
+
+      if (!payload.signature) {
+        const signaturePayload = {
+          first_name: payload.first_name,
+          last_name: payload.last_name,
+          date_of_birth: payload.date_of_birth,
+          phone: payload.phone,
+          email: payload.email,
+          addresses: payload.addresses
+        };
+        payload.signature = btoa(JSON.stringify(signaturePayload));
+      }
 
       console.log("--- PROXY: PREPARING UPSTREAM REQUEST ---");
       const upstreamUrl = `https://r2r.theclaimsystem.co.uk/api/v1/affiliate/${affiliateId}`;
