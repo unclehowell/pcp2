@@ -191,6 +191,14 @@ export const ClaimForm: React.FC = () => {
         throw new Error(`Server returned non-JSON response (${response.status}): ${text.slice(0, 100)}`);
       }
 
+      // Detect upstream validation errors even when HTTP status is 200
+      if (result && (result.message === "Validation failed." || result.error || (result.errors && Object.keys(result.errors).length > 0))) {
+        throw new Error(
+          result.message || 
+          (result.errors ? JSON.stringify(result.errors) : 'Submission rejected by server')
+        );
+      }
+
       if (response.ok) {
         // Check for logical errors in 200 OK response
         if (result.success === false || result.status === 'error') {
