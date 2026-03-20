@@ -41,7 +41,7 @@ async function startServer() {
             postcode: data.postcode || ''
           }
         ],
-        account_creation_url: 'https://car.financecheque.uk/claim'
+        account_creation_url: 'https://pcp2.pages.dev/claim'
       };
 
       console.log("--- PROXY: PREPARING UPSTREAM REQUEST ---");
@@ -58,8 +58,8 @@ async function startServer() {
         'Authorization': `Bearer ${apiKey}`,
         'X-Affiliate-ID': affiliateId,
         'User-Agent': req.headers['user-agent'] || 'Express-Server',
-        'Origin': 'https://car.financecheque.uk',
-        'Referer': 'https://car.financecheque.uk/claim'
+        'Origin': 'https://pcp2.pages.dev',
+        'Referer': 'https://pcp2.pages.dev/claim'
       };
 
       const response = await fetch(upstreamUrl, {

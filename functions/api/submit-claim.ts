@@ -27,7 +27,7 @@ export async function onRequestPost(context) {
           postcode: data.postcode || ''
         }
       ],
-      account_creation_url: 'https://car.financecheque.uk/claim'
+      account_creation_url: 'https://pcp2.pages.dev/claim'
     };
 
     console.log("--- OUTGOING REQUEST TO UPSTREAM ---");
