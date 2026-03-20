@@ -13,13 +13,12 @@ export async function onRequestPost(context) {
       });
     }
     const body = JSON.parse(text);
-    body.affiliate_id = affiliateId;
     
     // Use Cloudflare's connecting IP if available to ensure accuracy
     const cfIp = request.headers.get('CF-Connecting-IP');
     if (cfIp) {
       console.log("Using CF-Connecting-IP:", cfIp);
-      body.client_ip = cfIp;
+      body.clientip = cfIp;
     }
 
     console.log("--- OUTGOING REQUEST TO UPSTREAM ---");

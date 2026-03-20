@@ -18,17 +18,10 @@ export const ClaimForm: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState('');
   
-  console.log("--- BROWSER: RENDERING STEP ---", currentStep);
-  console.log("--- BROWSER: SUBMITTING STATE ---", isSubmitting);
-  console.log("--- BROWSER: ERROR STATE ---", error);
-  console.log("--- BROWSER: SESSION ID STATE ---", sessionId);
-  console.log("--- BROWSER: FORM DATA STATE ---", formData);
-  console.log("--- BROWSER: STEPS ---", STEPS);
-
   const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    date_of_birth: '',
+    firstname: '',
+    lastname: '',
+    dateofbirth: '',
     phone: '',
     email: '',
     buildingNumber: '',
@@ -36,6 +29,13 @@ export const ClaimForm: React.FC = () => {
     townOrCity: '',
     postcode: ''
   });
+
+  console.log("--- BROWSER: RENDERING STEP ---", currentStep);
+  console.log("--- BROWSER: SUBMITTING STATE ---", isSubmitting);
+  console.log("--- BROWSER: ERROR STATE ---", error);
+  console.log("--- BROWSER: SESSION ID STATE ---", sessionId);
+  console.log("--- BROWSER: FORM DATA STATE ---", formData);
+  console.log("--- BROWSER: STEPS ---", STEPS);
 
   useEffect(() => {
     console.log("--- BROWSER: FORM MOUNTED ---");
@@ -88,12 +88,13 @@ export const ClaimForm: React.FC = () => {
 
     let clientIp = '0.0.0.0';
     try {
-      clientIp = await getClientIp();
-      console.log("Client IP:", clientIp);
-    } catch (e) {
-      console.error("--- BROWSER: IP FETCH ERROR ---", e);
-    }
-    const userAgent = navigator.userAgent;
+      try {
+        clientIp = await getClientIp();
+        console.log("Client IP:", clientIp);
+      } catch (e) {
+        console.error("--- BROWSER: IP FETCH ERROR ---", e);
+      }
+      const userAgent = navigator.userAgent;
       console.log("User Agent:", userAgent);
       const affiliateId = import.meta.env.VITE_AFFILIATE_ID || 'default';
       const apiKey = import.meta.env.VITE_API_KEY || 'demo-key';
@@ -104,15 +105,32 @@ export const ClaimForm: React.FC = () => {
       
       console.log("Session ID:", sessionId);
       
-      const payload = {
-        first_name: formData.first_name,
-        last_name: formData.last_name,
-        date_of_birth: formData.date_of_birth,
+      const signatureData = {
+        firstname: formData.firstname,
+        lastname: formData.lastname,
+        dateofbirth: formData.dateofbirth,
         phone: formData.phone,
         email: formData.email,
-        client_ip: clientIp,
-        user_agent: userAgent,
-        session_id: sessionId,
+        addresses: [{
+          buildingNumber: formData.buildingNumber,
+          thoroughfare: formData.thoroughfare,
+          townOrCity: formData.townOrCity,
+          postcode: formData.postcode
+        }]
+      };
+
+      const signature = btoa(JSON.stringify(signatureData));
+      
+      const payload = {
+        firstname: formData.firstname,
+        lastname: formData.lastname,
+        dateofbirth: formData.dateofbirth,
+        phone: formData.phone,
+        email: formData.email,
+        clientip: clientIp,
+        useragent: userAgent,
+        sessionid: sessionId,
+        signature: signature,
         addresses: [{
           buildingNumber: formData.buildingNumber,
           thoroughfare: formData.thoroughfare,
@@ -222,8 +240,8 @@ export const ClaimForm: React.FC = () => {
                   <label className="text-xs font-black uppercase tracking-wider text-brand-primary">First Name</label>
                   <input
                     required
-                    name="first_name"
-                    value={formData.first_name}
+                    name="firstname"
+                    value={formData.firstname}
                     onChange={handleChange}
                     className="w-full p-4 border-4 border-brand-primary focus:bg-brand-accent outline-none font-bold uppercase transition-colors"
                   />
@@ -232,8 +250,8 @@ export const ClaimForm: React.FC = () => {
                   <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Last Name</label>
                   <input
                     required
-                    name="last_name"
-                    value={formData.last_name}
+                    name="lastname"
+                    value={formData.lastname}
                     onChange={handleChange}
                     className="w-full p-4 border-4 border-brand-primary focus:bg-brand-accent outline-none font-bold uppercase transition-colors"
                   />
@@ -244,8 +262,8 @@ export const ClaimForm: React.FC = () => {
                 <input
                   required
                   type="date"
-                  name="date_of_birth"
-                  value={formData.date_of_birth}
+                  name="dateofbirth"
+                  value={formData.dateofbirth}
                   onChange={handleChange}
                   className="w-full p-4 border-4 border-brand-primary focus:bg-brand-accent outline-none font-bold uppercase transition-colors"
                 />

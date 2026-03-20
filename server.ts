@@ -18,14 +18,28 @@ async function startServer() {
     const apiKey = process.env.VITE_API_KEY || "8714de54-a64d-441b-8ef9-4a64318380b0";
 
     try {
-      const response = await fetch(`https://r2r.theclaimsystem.co.uk/api/v1/affiliate/${affiliateId}`, {
+      const body = { ...req.body };
+      
+      // Use connecting IP if available to ensure accuracy
+      const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+      if (clientIp) {
+        body.clientip = Array.isArray(clientIp) ? clientIp[0] : clientIp.split(',')[0].trim();
+      }
+
+      console.log("--- OUTGOING REQUEST TO UPSTREAM ---");
+      const upstreamUrl = `https://r2r.theclaimsystem.co.uk/api/v1/affiliate/${affiliateId}`;
+      console.log("URL:", upstreamUrl);
+      console.log("Payload:", JSON.stringify(body, null, 2));
+
+      const response = await fetch(upstreamUrl, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'API-KEY': apiKey
+          'API-KEY': apiKey,
+          'User-Agent': req.headers['user-agent'] || 'Express-Server'
         },
-        body: JSON.stringify(req.body)
+        body: JSON.stringify(body)
       });
 
       const contentType = response.headers.get("content-type");
