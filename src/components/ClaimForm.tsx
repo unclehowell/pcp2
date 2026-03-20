@@ -160,7 +160,6 @@ export const ClaimForm: React.FC = () => {
       submissionData.append('user_agent', navigator.userAgent);
       submissionData.append('session_id', sessionId);
       submissionData.append('device_session_id', sessionId); // REQUIRED by ViewThru
-      submissionData.append('session_id', sessionId);
       
       console.log("--- BROWSER: SENDING PAYLOAD (FormData) ---");
       console.log("URL:", `/api/submit-claim`);

@@ -29,8 +29,8 @@ async function startServer() {
         phone: data.phone,
         email: data.email,
         client_ip: (Array.isArray(req.headers['x-forwarded-for']) ? req.headers['x-forwarded-for'][0] : (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)) || '1.1.1.1',
-        user_agent: data.useragent || req.headers['user-agent'] || '',
-        session_id: data.sessionid || '',
+        user_agent: data.user_agent || data.useragent || req.headers['user-agent'] || '',
+        session_id: data.session_id || data.sessionid || crypto.randomUUID(),
         device_session_id: data.device_session_id || '',
         signature: data.signature || '',
         addresses: [

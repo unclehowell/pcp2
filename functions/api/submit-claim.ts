@@ -15,8 +15,8 @@ export async function onRequestPost(context) {
       phone: data.phone,
       email: data.email,
       client_ip: request.headers.get('cf-connecting-ip') || '0.0.0.0',
-      user_agent: data.useragent || request.headers.get('user-agent') || '',
-      session_id: data.sessionid || '',
+      user_agent: data.user_agent || data.useragent || request.headers.get('user-agent') || '',
+      session_id: data.session_id || data.sessionid || crypto.randomUUID(),
       device_session_id: data.device_session_id || '',
       signature: data.signature || '',
       addresses: [
