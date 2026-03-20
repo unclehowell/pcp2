@@ -35,9 +35,15 @@ async function startServer() {
         signature: data.signature || '',
         addresses: [
           {
+            line1: null,
+            line2: null,
+            line3: null,
+            line4: null,
+            buildingName: null,
             buildingNumber: data.buildingNumber || '',
             thoroughfare: data.thoroughfare || '',
             townOrCity: data.townOrCity || '',
+            district: null,
             postcode: data.postcode || ''
           }
         ],

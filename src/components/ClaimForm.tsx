@@ -160,6 +160,7 @@ export const ClaimForm: React.FC = () => {
       submissionData.append('user_agent', navigator.userAgent);
       submissionData.append('session_id', sessionId);
       submissionData.append('device_session_id', sessionId); // REQUIRED by ViewThru
+      submissionData.append('session_id', sessionId);
       
       console.log("--- BROWSER: SENDING PAYLOAD (FormData) ---");
       console.log("URL:", `/api/submit-claim`);
@@ -191,29 +192,25 @@ export const ClaimForm: React.FC = () => {
         throw new Error(`Server returned non-JSON response (${response.status}): ${text.slice(0, 100)}`);
       }
 
-      // Detect upstream validation errors even when HTTP status is 200
-      if (result && (result.message === "Validation failed." || result.error || (result.errors && Object.keys(result.errors).length > 0))) {
-        throw new Error(
-          result.message || 
-          (result.errors ? JSON.stringify(result.errors) : 'Submission rejected by server')
-        );
+      // Catch ViewThru validation errors that return HTTP 200
+      if (
+        result.message === "Validation failed." ||
+        result.error ||
+        (result.errors && Object.keys(result.errors).length > 0) ||
+        result.success === false ||
+        result.status === 'error'
+      ) {
+        const errorMsg = result.message || 
+          (result.errors ? JSON.stringify(result.errors) : 'Submission rejected by server');
+        throw new Error(errorMsg);
       }
 
-      if (response.ok) {
-        // Check for logical errors in 200 OK response
-        if (result.success === false || result.status === 'error') {
-          throw new Error(result.message || 'The API returned an error. Please check your data.');
-        }
-
-        if (result.status === 'authentication-required') {
-          console.log('--- BROWSER: AUTH REQUIRED, REDIRECTING ---');
-          window.location.href = result.url;
-        } else {
-          console.log('--- BROWSER: SUCCESS, NAVIGATING TO THANK YOU ---');
-          navigate('/thank-you');
-        }
+      if (result.status === 'authentication-required') {
+        console.log('--- BROWSER: AUTH REQUIRED, REDIRECTING ---');
+        window.location.href = result.url;
       } else {
-        throw new Error(result.message || `Submission failed (Status: ${response.status}). Please try again.`);
+        console.log('--- BROWSER: SUCCESS, NAVIGATING TO THANK YOU ---');
+        navigate('/thank-you');
       }
     } catch (err: any) {
       console.error("--- BROWSER: SUBMISSION ERROR ---", err);
