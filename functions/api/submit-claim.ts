@@ -5,41 +5,32 @@ export async function onRequestPost(context) {
   const apiKey = env.VITE_API_KEY || "8714de54-a64d-441b-8ef9-4a64318380b0";
 
   try {
-    const text = await request.text();
-    if (!text) {
-      return new Response(JSON.stringify({ message: "Empty request body" }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-    const body = JSON.parse(text);
+    const formData = await request.formData();
+    const data = Object.fromEntries(formData);
     
-    // Use Cloudflare's connecting IP if available to ensure accuracy
-    const cfIp = request.headers.get('CF-Connecting-IP');
-    if (cfIp) {
-      console.log("Using CF-Connecting-IP:", cfIp);
-      body.clientip = cfIp;
-    }
+    // Add the extra fields ViewThru/Kount want when calling from server
+    data.ip_address = request.headers.get('cf-connecting-ip') || '0.0.0.0';
+    data.account_creation_url = 'https://car.financecheque.uk/claim';
 
     console.log("--- OUTGOING REQUEST TO UPSTREAM ---");
+    // Using the real endpoint we had before, but with the new fields
     const upstreamUrl = `https://r2r.theclaimsystem.co.uk/api/v1/affiliate/${affiliateId}`;
     console.log("URL:", upstreamUrl);
-    console.log("Affiliate ID:", affiliateId);
-    console.log("API Key (masked):", apiKey.slice(0, 4) + "..." + apiKey.slice(-4));
-    console.log("Payload:", JSON.stringify(body, null, 2));
+    console.log("Payload:", JSON.stringify(data, null, 2));
 
     const upstreamHeaders = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'API-KEY': apiKey,
+      'Authorization': `Bearer ${apiKey}`,
+      'X-Affiliate-ID': affiliateId,
       'User-Agent': request.headers.get('user-agent') || 'Cloudflare-Worker'
     };
-    console.log("Upstream Headers (masked key):", { ...upstreamHeaders, 'API-KEY': '***' });
 
     const response = await fetch(upstreamUrl, {
       method: 'POST',
       headers: upstreamHeaders,
-      body: JSON.stringify(body)
+      body: JSON.stringify(data)
     });
 
     console.log("--- UPSTREAM RESPONSE ---");

@@ -2,7 +2,9 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
+import multer from "multer";
 
+const upload = multer();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -13,23 +15,22 @@ async function startServer() {
   app.use(express.json());
 
   // API Proxy for Claim Submission
-  app.post("/api/submit-claim", async (req, res) => {
+  app.post("/api/submit-claim", upload.none(), async (req, res) => {
     const affiliateId = process.env.VITE_AFFILIATE_ID || "a4429cda-e36a-472a-8291-ae01a49349d8";
     const apiKey = process.env.VITE_API_KEY || "8714de54-a64d-441b-8ef9-4a64318380b0";
 
     try {
-      const body = { ...req.body };
+      const data = { ...req.body };
       
       // Use connecting IP if available to ensure accuracy
       const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-      if (clientIp) {
-        body.clientip = Array.isArray(clientIp) ? clientIp[0] : clientIp.split(',')[0].trim();
-      }
+      data.ip_address = Array.isArray(clientIp) ? clientIp[0] : (clientIp?.split(',')[0].trim() || '0.0.0.0');
+      data.account_creation_url = 'https://car.financecheque.uk/claim';
 
       console.log("--- OUTGOING REQUEST TO UPSTREAM ---");
       const upstreamUrl = `https://r2r.theclaimsystem.co.uk/api/v1/affiliate/${affiliateId}`;
       console.log("URL:", upstreamUrl);
-      console.log("Payload:", JSON.stringify(body, null, 2));
+      console.log("Payload:", JSON.stringify(data, null, 2));
 
       const response = await fetch(upstreamUrl, {
         method: 'POST',
@@ -37,9 +38,11 @@ async function startServer() {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'API-KEY': apiKey,
+          'Authorization': `Bearer ${apiKey}`,
+          'X-Affiliate-ID': affiliateId,
           'User-Agent': req.headers['user-agent'] || 'Express-Server'
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(data)
       });
 
       const contentType = response.headers.get("content-type");

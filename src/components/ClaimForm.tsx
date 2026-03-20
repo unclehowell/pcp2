@@ -17,6 +17,7 @@ export const ClaimForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState('');
+  const [kountReady, setKountReady] = useState(false);
   
   const [formData, setFormData] = useState({
     firstname: '',
@@ -49,13 +50,16 @@ export const ClaimForm: React.FC = () => {
     setSessionId(sid);
 
     const kountConfig = {
-      clientID: import.meta.env.VITE_KOUNT_CLIENT_ID || '341408861572516', // Updated with user provided KountID
-      environment: 'TEST',
+      clientID: import.meta.env.VITE_KOUNT_CLIENT_ID || '341408861572516',
+      environment: 'PROD', // or 'TEST' while testing
       isSinglePageApp: true,
       callbacks: {
-        'collect-begin': () => console.log('Kount collection started'),
-        'collect-end': () => console.log('Kount collection completed')
-      }
+        'collect-begin': (params: any) => console.log('Kount started', params),
+        'collect-end': (params: any) => {
+          console.log('Kount fingerprint complete', params);
+          setKountReady(true);
+        },
+      },
     };
     console.log("--- BROWSER: KOUNT CONFIG ---", kountConfig);
     
@@ -80,28 +84,22 @@ export const ClaimForm: React.FC = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!kountReady) {
+      alert('Please wait for device verification to complete');
+      return;
+    }
+
     console.log("--- BROWSER: SUBMITTING FORM ---", formData);
     setIsSubmitting(true);
     setError(null);
 
-    let clientIp = '0.0.0.0';
     try {
-      try {
-        clientIp = await getClientIp();
-        console.log("Client IP:", clientIp);
-      } catch (e) {
-        console.error("--- BROWSER: IP FETCH ERROR ---", e);
-      }
       const userAgent = navigator.userAgent;
       console.log("User Agent:", userAgent);
-      const affiliateId = import.meta.env.VITE_AFFILIATE_ID || 'default';
-      const apiKey = import.meta.env.VITE_API_KEY || 'demo-key';
-      
       console.log("--- BROWSER: ENV CHECK ---");
-      console.log("Affiliate ID present:", !!import.meta.env.VITE_AFFILIATE_ID);
-      console.log("API Key present:", !!import.meta.env.VITE_API_KEY);
+      console.log("Kount Client ID present:", !!import.meta.env.VITE_KOUNT_CLIENT_ID);
       
       console.log("Session ID:", sessionId);
       
@@ -121,37 +119,28 @@ export const ClaimForm: React.FC = () => {
 
       const signature = btoa(JSON.stringify(signatureData));
       
-      const payload = {
-        firstname: formData.firstname,
-        lastname: formData.lastname,
-        dateofbirth: formData.dateofbirth,
-        phone: formData.phone,
-        email: formData.email,
-        clientip: clientIp,
-        useragent: userAgent,
-        sessionid: sessionId,
-        signature: signature,
-        addresses: [{
-          buildingNumber: formData.buildingNumber,
-          thoroughfare: formData.thoroughfare,
-          townOrCity: formData.townOrCity,
-          postcode: formData.postcode
-        }]
-      };
+      // Use FormData as requested by user
+      const submissionData = new FormData();
+      submissionData.append('firstname', formData.firstname);
+      submissionData.append('lastname', formData.lastname);
+      submissionData.append('dateofbirth', formData.dateofbirth);
+      submissionData.append('phone', formData.phone);
+      submissionData.append('email', formData.email);
+      submissionData.append('buildingNumber', formData.buildingNumber);
+      submissionData.append('thoroughfare', formData.thoroughfare);
+      submissionData.append('townOrCity', formData.townOrCity);
+      submissionData.append('postcode', formData.postcode);
+      submissionData.append('useragent', userAgent);
+      submissionData.append('sessionid', sessionId);
+      submissionData.append('device_session_id', sessionId); // REQUIRED by ViewThru
+      submissionData.append('signature', signature);
       
-      console.log("--- BROWSER: SENDING PAYLOAD (addresses as array) ---", payload);
+      console.log("--- BROWSER: SENDING PAYLOAD (FormData) ---");
       console.log("URL:", `/api/submit-claim`);
-      
-      const headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      };
-      console.log("Headers:", headers);
       
       const response = await fetch(`/api/submit-claim`, {
         method: 'POST',
-        headers: headers,
-        body: JSON.stringify(payload)
+        body: submissionData
       });
 
       console.log("--- BROWSER: RESPONSE RECEIVED ---");
@@ -418,13 +407,15 @@ export const ClaimForm: React.FC = () => {
           ) : (
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !kountReady}
               className="brutal-btn-secondary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" /> Submitting...
                 </>
+              ) : !kountReady ? (
+                <>Verifying device...</>
               ) : (
                 <>Check Eligibility <CheckCircle2 className="w-4 h-4" /></>
               )}
