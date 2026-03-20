@@ -125,21 +125,21 @@ export const ClaimForm: React.FC = () => {
       
       console.log("Session ID:", sessionId);
       
-      // Convert DD/MM/YYYY to YYYY-MM-DD for submission
-      const dobParts = formData.date_of_birth.split('/');
-      const formattedDob = dobParts.length === 3 ? `${dobParts[2]}-${dobParts[1]}-${dobParts[0]}` : formData.date_of_birth;
+      const dobFormatted = formData.date_of_birth 
+        ? formData.date_of_birth.split('/').reverse().join('-')
+        : '';
 
       const signatureData = {
         first_name: formData.first_name,
         last_name: formData.last_name,
-        date_of_birth: formattedDob,
+        date_of_birth: dobFormatted,
         phone: formData.phone,
         email: formData.email,
         addresses: [{
-          buildingNumber: formData.buildingNumber,
-          thoroughfare: formData.thoroughfare,
-          townOrCity: formData.townOrCity,
-          postcode: formData.postcode
+          buildingNumber: formData.buildingNumber || '',
+          thoroughfare: formData.thoroughfare || '',
+          townOrCity: formData.townOrCity || '',
+          postcode: formData.postcode || ''
         }]
       };
 
@@ -149,17 +149,17 @@ export const ClaimForm: React.FC = () => {
       const submissionData = new FormData();
       submissionData.append('first_name', formData.first_name);
       submissionData.append('last_name', formData.last_name);
-      submissionData.append('date_of_birth', formattedDob);
+      submissionData.append('date_of_birth', dobFormatted);
       submissionData.append('phone', formData.phone);
       submissionData.append('email', formData.email);
       submissionData.append('buildingNumber', formData.buildingNumber);
       submissionData.append('thoroughfare', formData.thoroughfare);
       submissionData.append('townOrCity', formData.townOrCity);
       submissionData.append('postcode', formData.postcode);
-      submissionData.append('useragent', userAgent);
-      submissionData.append('sessionid', sessionId);
-      submissionData.append('device_session_id', sessionId); // REQUIRED by ViewThru
       submissionData.append('signature', signature);
+      submissionData.append('user_agent', navigator.userAgent);
+      submissionData.append('session_id', sessionId);
+      submissionData.append('device_session_id', sessionId); // REQUIRED by ViewThru
       
       console.log("--- BROWSER: SENDING PAYLOAD (FormData) ---");
       console.log("URL:", `/api/submit-claim`);
