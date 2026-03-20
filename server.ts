@@ -23,12 +23,12 @@ async function startServer() {
       const data = { ...req.body };
       
       const payload = {
-        firstName: data.firstname || data.first_name || data.firstName,
-        lastName: data.lastname || data.last_name || data.lastName,
+        first_name: data.firstname || data.first_name || data.firstName,
+        last_name: data.lastname || data.last_name || data.lastName,
         date_of_birth: data.dateofbirth || data.date_of_birth,
         phone: data.phone,
         email: data.email,
-        ip_address: (Array.isArray(req.headers['x-forwarded-for']) ? req.headers['x-forwarded-for'][0] : (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)) || '0.0.0.0',
+        client_ip: (Array.isArray(req.headers['x-forwarded-for']) ? req.headers['x-forwarded-for'][0] : (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress)) || '1.1.1.1',
         user_agent: data.useragent || req.headers['user-agent'] || '',
         session_id: data.sessionid || '',
         device_session_id: data.device_session_id || '',
@@ -44,23 +44,32 @@ async function startServer() {
         account_creation_url: 'https://car.financecheque.uk/claim'
       };
 
-      console.log("--- OUTGOING REQUEST TO UPSTREAM ---");
+      console.log("--- PROXY: PREPARING UPSTREAM REQUEST ---");
       const upstreamUrl = `https://r2r.theclaimsystem.co.uk/api/v1/affiliate/${affiliateId}`;
-      console.log("URL:", upstreamUrl);
-      console.log("Payload:", JSON.stringify(payload, null, 2));
+      console.log("Target URL:", upstreamUrl);
+      console.log("Affiliate ID used:", affiliateId);
+      console.log("API Key present:", !!apiKey);
+      console.log("Client IP being sent:", payload.client_ip);
+      
+      const upstreamHeaders = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'API-KEY': apiKey,
+        'Authorization': `Bearer ${apiKey}`,
+        'X-Affiliate-ID': affiliateId,
+        'User-Agent': req.headers['user-agent'] || 'Express-Server',
+        'Origin': 'https://car.financecheque.uk',
+        'Referer': 'https://car.financecheque.uk/claim'
+      };
 
       const response = await fetch(upstreamUrl, {
         method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'API-KEY': apiKey,
-          'Authorization': `Bearer ${apiKey}`,
-          'X-Affiliate-ID': affiliateId,
-          'User-Agent': req.headers['user-agent'] || 'Express-Server'
-        },
+        headers: upstreamHeaders,
         body: JSON.stringify(payload)
       });
+
+      console.log("--- PROXY: UPSTREAM RESPONSE RECEIVED ---");
+      console.log("Status Code:", response.status);
 
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {

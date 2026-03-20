@@ -9,12 +9,12 @@ export async function onRequestPost(context) {
     const data = Object.fromEntries(formData);
     
     const payload = {
-      firstName: data.firstname || data.first_name || data.firstName,
-      lastName: data.lastname || data.last_name || data.lastName,
+      first_name: data.firstname || data.first_name || data.firstName,
+      last_name: data.lastname || data.last_name || data.lastName,
       date_of_birth: data.dateofbirth || data.date_of_birth,
       phone: data.phone,
       email: data.email,
-      ip_address: request.headers.get('cf-connecting-ip') || '0.0.0.0',
+      client_ip: request.headers.get('cf-connecting-ip') || '0.0.0.0',
       user_agent: data.useragent || request.headers.get('user-agent') || '',
       session_id: data.sessionid || '',
       device_session_id: data.device_session_id || '',

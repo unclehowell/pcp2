@@ -252,9 +252,10 @@ export const ClaimForm: React.FC = () => {
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-black uppercase tracking-wider text-brand-primary">First Name</label>
+                  <label htmlFor="first_name" className="text-xs font-black uppercase tracking-wider text-brand-primary">First Name</label>
                   <input
                     required
+                    id="first_name"
                     name="first_name"
                     value={formData.first_name}
                     onChange={handleChange}
@@ -262,9 +263,10 @@ export const ClaimForm: React.FC = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Last Name</label>
+                  <label htmlFor="last_name" className="text-xs font-black uppercase tracking-wider text-brand-primary">Last Name</label>
                   <input
                     required
+                    id="last_name"
                     name="last_name"
                     value={formData.last_name}
                     onChange={handleChange}
@@ -273,9 +275,10 @@ export const ClaimForm: React.FC = () => {
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Date of Birth (DD/MM/YYYY)</label>
+                <label htmlFor="date_of_birth" className="text-xs font-black uppercase tracking-wider text-brand-primary">Date of Birth (DD/MM/YYYY)</label>
                 <input
                   required
+                  id="date_of_birth"
                   type="text"
                   name="date_of_birth"
                   placeholder="DD/MM/YYYY"
@@ -285,9 +288,10 @@ export const ClaimForm: React.FC = () => {
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Phone Number</label>
+                <label htmlFor="phone" className="text-xs font-black uppercase tracking-wider text-brand-primary">Phone Number</label>
                 <input
                   required
+                  id="phone"
                   type="tel"
                   name="phone"
                   value={formData.phone}
@@ -296,9 +300,10 @@ export const ClaimForm: React.FC = () => {
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Email Address</label>
+                <label htmlFor="email" className="text-xs font-black uppercase tracking-wider text-brand-primary">Email Address</label>
                 <input
                   required
+                  id="email"
                   type="email"
                   name="email"
                   value={formData.email}
@@ -318,9 +323,10 @@ export const ClaimForm: React.FC = () => {
               className="space-y-4"
             >
               <div className="space-y-1">
-                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Building Number / Name</label>
+                <label htmlFor="buildingNumber" className="text-xs font-black uppercase tracking-wider text-brand-primary">Building Number / Name</label>
                 <input
                   required
+                  id="buildingNumber"
                   name="buildingNumber"
                   value={formData.buildingNumber}
                   onChange={handleChange}
@@ -328,9 +334,10 @@ export const ClaimForm: React.FC = () => {
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Street Name</label>
+                <label htmlFor="thoroughfare" className="text-xs font-black uppercase tracking-wider text-brand-primary">Street Name</label>
                 <input
                   required
+                  id="thoroughfare"
                   name="thoroughfare"
                   value={formData.thoroughfare}
                   onChange={handleChange}
@@ -338,9 +345,10 @@ export const ClaimForm: React.FC = () => {
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">City / Town</label>
+                <label htmlFor="townOrCity" className="text-xs font-black uppercase tracking-wider text-brand-primary">City / Town</label>
                 <input
                   required
+                  id="townOrCity"
                   name="townOrCity"
                   value={formData.townOrCity}
                   onChange={handleChange}
@@ -348,9 +356,10 @@ export const ClaimForm: React.FC = () => {
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Postcode</label>
+                <label htmlFor="postcode" className="text-xs font-black uppercase tracking-wider text-brand-primary">Postcode</label>
                 <input
                   required
+                  id="postcode"
                   name="postcode"
                   value={formData.postcode}
                   onChange={handleChange}
