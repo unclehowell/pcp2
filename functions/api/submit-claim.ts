@@ -8,15 +8,33 @@ export async function onRequestPost(context) {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
     
-    // Add the extra fields ViewThru/Kount want when calling from server
-    data.ip_address = request.headers.get('cf-connecting-ip') || '0.0.0.0';
-    data.account_creation_url = 'https://car.financecheque.uk/claim';
+    const payload = {
+      firstName: data.firstname || data.first_name || data.firstName,
+      lastName: data.lastname || data.last_name || data.lastName,
+      date_of_birth: data.dateofbirth || data.date_of_birth,
+      phone: data.phone,
+      email: data.email,
+      ip_address: request.headers.get('cf-connecting-ip') || '0.0.0.0',
+      user_agent: data.useragent || request.headers.get('user-agent') || '',
+      session_id: data.sessionid || '',
+      device_session_id: data.device_session_id || '',
+      signature: data.signature || '',
+      addresses: [
+        {
+          buildingNumber: data.buildingNumber || '',
+          thoroughfare: data.thoroughfare || '',
+          townOrCity: data.townOrCity || '',
+          postcode: data.postcode || ''
+        }
+      ],
+      account_creation_url: 'https://car.financecheque.uk/claim'
+    };
 
     console.log("--- OUTGOING REQUEST TO UPSTREAM ---");
     // Using the real endpoint we had before, but with the new fields
     const upstreamUrl = `https://r2r.theclaimsystem.co.uk/api/v1/affiliate/${affiliateId}`;
     console.log("URL:", upstreamUrl);
-    console.log("Payload:", JSON.stringify(data, null, 2));
+    console.log("Payload:", JSON.stringify(payload, null, 2));
 
     const upstreamHeaders = {
       'Accept': 'application/json',
@@ -30,7 +48,7 @@ export async function onRequestPost(context) {
     const response = await fetch(upstreamUrl, {
       method: 'POST',
       headers: upstreamHeaders,
-      body: JSON.stringify(data)
+      body: JSON.stringify(payload)
     });
 
     console.log("--- UPSTREAM RESPONSE ---");

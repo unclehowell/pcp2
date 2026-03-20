@@ -20,9 +20,9 @@ export const ClaimForm: React.FC = () => {
   const [kountReady, setKountReady] = useState(false);
   
   const [formData, setFormData] = useState({
-    firstname: '',
-    lastname: '',
-    dateofbirth: '',
+    first_name: '',
+    last_name: '',
+    date_of_birth: '',
     phone: '',
     email: '',
     buildingNumber: '',
@@ -71,11 +71,33 @@ export const ClaimForm: React.FC = () => {
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(`--- BROWSER: INPUT CHANGE [${e.target.name}] ---`, e.target.value);
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    let value = e.target.value;
+    
+    if (e.target.name === 'date_of_birth') {
+      // Simple mask for DD/MM/YYYY
+      const digits = value.replace(/\D/g, '');
+      if (digits.length <= 2) {
+        value = digits;
+      } else if (digits.length <= 4) {
+        value = `${digits.slice(0, 2)}/${digits.slice(2)}`;
+      } else {
+        value = `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4, 8)}`;
+      }
+    }
+
+    console.log(`--- BROWSER: INPUT CHANGE [${e.target.name}] ---`, value);
+    setFormData({ ...formData, [e.target.name]: value });
   };
 
   const nextStep = () => {
+    if (currentStep === 0) {
+      // Basic validation for DOB format
+      const dobRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+      if (!dobRegex.test(formData.date_of_birth)) {
+        alert('Please enter a valid Date of Birth in DD/MM/YYYY format');
+        return;
+      }
+    }
     console.log("--- BROWSER: NEXT STEP ---", currentStep + 1);
     setCurrentStep((prev) => Math.min(prev + 1, STEPS.length - 1));
   };
@@ -103,10 +125,14 @@ export const ClaimForm: React.FC = () => {
       
       console.log("Session ID:", sessionId);
       
+      // Convert DD/MM/YYYY to YYYY-MM-DD for submission
+      const dobParts = formData.date_of_birth.split('/');
+      const formattedDob = dobParts.length === 3 ? `${dobParts[2]}-${dobParts[1]}-${dobParts[0]}` : formData.date_of_birth;
+
       const signatureData = {
-        firstname: formData.firstname,
-        lastname: formData.lastname,
-        dateofbirth: formData.dateofbirth,
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        date_of_birth: formattedDob,
         phone: formData.phone,
         email: formData.email,
         addresses: [{
@@ -121,9 +147,9 @@ export const ClaimForm: React.FC = () => {
       
       // Use FormData as requested by user
       const submissionData = new FormData();
-      submissionData.append('firstname', formData.firstname);
-      submissionData.append('lastname', formData.lastname);
-      submissionData.append('dateofbirth', formData.dateofbirth);
+      submissionData.append('first_name', formData.first_name);
+      submissionData.append('last_name', formData.last_name);
+      submissionData.append('date_of_birth', formattedDob);
       submissionData.append('phone', formData.phone);
       submissionData.append('email', formData.email);
       submissionData.append('buildingNumber', formData.buildingNumber);
@@ -229,8 +255,8 @@ export const ClaimForm: React.FC = () => {
                   <label className="text-xs font-black uppercase tracking-wider text-brand-primary">First Name</label>
                   <input
                     required
-                    name="firstname"
-                    value={formData.firstname}
+                    name="first_name"
+                    value={formData.first_name}
                     onChange={handleChange}
                     className="w-full p-4 border-4 border-brand-primary focus:bg-brand-accent outline-none font-bold uppercase transition-colors"
                   />
@@ -239,20 +265,21 @@ export const ClaimForm: React.FC = () => {
                   <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Last Name</label>
                   <input
                     required
-                    name="lastname"
-                    value={formData.lastname}
+                    name="last_name"
+                    value={formData.last_name}
                     onChange={handleChange}
                     className="w-full p-4 border-4 border-brand-primary focus:bg-brand-accent outline-none font-bold uppercase transition-colors"
                   />
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Date of Birth</label>
+                <label className="text-xs font-black uppercase tracking-wider text-brand-primary">Date of Birth (DD/MM/YYYY)</label>
                 <input
                   required
-                  type="date"
-                  name="dateofbirth"
-                  value={formData.dateofbirth}
+                  type="text"
+                  name="date_of_birth"
+                  placeholder="DD/MM/YYYY"
+                  value={formData.date_of_birth}
                   onChange={handleChange}
                   className="w-full p-4 border-4 border-brand-primary focus:bg-brand-accent outline-none font-bold uppercase transition-colors"
                 />
