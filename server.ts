@@ -35,33 +35,38 @@ async function startServer() {
         client_ip: client_ip,
         user_agent: user_agent,
         session_id: session_id,
-        addresses: {
-          line1: null,
-          line2: null,
-          line3: null,
-          line4: null,
-          buildingName: null,
-          buildingNumber: data.buildingNumber || '',
-          thoroughfare: data.thoroughfare || '',
-          townOrCity: data.townOrCity || '',
-          district: null,
-          postcode: data.postcode || ''
-        }
+        signature: data.signature || '',
+        addresses: [
+          {
+            line1: null,
+            line2: null,
+            line3: null,
+            line4: null,
+            buildingName: null,
+            buildingNumber: data.buildingNumber || '',
+            thoroughfare: data.thoroughfare || '',
+            townOrCity: data.townOrCity || '',
+            district: null,
+            postcode: data.postcode || ''
+          }
+        ]
       };
 
-      // Generate signature signing ALL fields in the payload (except signature itself)
-      const signaturePayload = {
-        first_name: payload.first_name,
-        last_name: payload.last_name,
-        date_of_birth: payload.date_of_birth,
-        phone: payload.phone,
-        email: payload.email,
-        client_ip: payload.client_ip,
-        user_agent: payload.user_agent,
-        session_id: payload.session_id,
-        addresses: payload.addresses
-      };
-      payload.signature = btoa(JSON.stringify(signaturePayload));
+      // Only generate signature if missing from frontend
+      if (!payload.signature) {
+        const signaturePayload = {
+          first_name: payload.first_name,
+          last_name: payload.last_name,
+          date_of_birth: payload.date_of_birth,
+          phone: payload.phone,
+          email: payload.email,
+          client_ip: payload.client_ip,
+          user_agent: payload.user_agent,
+          session_id: payload.session_id,
+          addresses: payload.addresses
+        };
+        payload.signature = btoa(JSON.stringify(signaturePayload));
+      }
       
       // Add ViewThru specific fields
       payload.device_session_id = session_id;
