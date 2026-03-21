@@ -8,45 +8,51 @@ export async function onRequestPost(context) {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
     
-    const payload = {
+    const client_ip = request.headers.get('cf-connecting-ip') || '0.0.0.0';
+    const user_agent = data.user_agent || data.useragent || request.headers.get('user-agent') || '';
+    const session_id = data.session_id || data.sessionid || data.device_session_id || crypto.randomUUID();
+
+    const payload: any = {
       first_name: data.firstname || data.first_name || data.firstName,
       last_name: data.lastname || data.last_name || data.lastName,
       date_of_birth: data.dateofbirth || data.date_of_birth,
       phone: data.phone,
       email: data.email,
-      client_ip: request.headers.get('cf-connecting-ip') || '0.0.0.0',
-      user_agent: data.user_agent || data.useragent || request.headers.get('user-agent') || '',
-      session_id: data.session_id || data.sessionid || data.device_session_id || crypto.randomUUID(),
-      device_session_id: data.device_session_id || '',
-      signature: data.signature || '',
-      addresses: [
-        {
-          line1: null,
-          line2: null,
-          line3: null,
-          line4: null,
-          buildingName: null,
-          buildingNumber: data.buildingNumber || '',
-          thoroughfare: data.thoroughfare || '',
-          townOrCity: data.townOrCity || '',
-          district: null,
-          postcode: data.postcode || ''
-        }
-      ],
-      account_creation_url: 'https://pcp2.pages.dev/claim'
+      client_ip: client_ip,
+      user_agent: user_agent,
+      session_id: session_id,
+      addresses: {
+        line1: null,
+        line2: null,
+        line3: null,
+        line4: null,
+        buildingName: null,
+        buildingNumber: data.buildingNumber || '',
+        thoroughfare: data.thoroughfare || '',
+        townOrCity: data.townOrCity || '',
+        district: null,
+        postcode: data.postcode || ''
+      }
     };
 
-    if (!payload.signature) {
-      const signaturePayload = {
-        first_name: payload.first_name,
-        last_name: payload.last_name,
-        date_of_birth: payload.date_of_birth,
-        phone: payload.phone,
-        email: payload.email,
-        addresses: payload.addresses
-      };
-      payload.signature = btoa(JSON.stringify(signaturePayload));
-    }
+    // Generate signature signing ALL fields in the payload (except signature itself)
+    // This matches the example structure where signature is alongside these fields
+    const signaturePayload = {
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      date_of_birth: payload.date_of_birth,
+      phone: payload.phone,
+      email: payload.email,
+      client_ip: payload.client_ip,
+      user_agent: payload.user_agent,
+      session_id: payload.session_id,
+      addresses: payload.addresses
+    };
+    payload.signature = btoa(JSON.stringify(signaturePayload));
+    
+    // Add ViewThru specific fields
+    payload.device_session_id = session_id;
+    payload.account_creation_url = 'https://pcp2.pages.dev/claim';
 
     console.log("--- OUTGOING REQUEST TO UPSTREAM ---");
     // Using the real endpoint we had before, but with the new fields

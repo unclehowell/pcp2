@@ -136,12 +136,12 @@ export const ClaimForm: React.FC = () => {
         phone: formData.phone,
         email: formData.email,
         session_id: sessionId,
-        addresses: [{
+        addresses: {
           buildingNumber: formData.buildingNumber || '',
           thoroughfare: formData.thoroughfare || '',
           townOrCity: formData.townOrCity || '',
           postcode: formData.postcode || ''
-        }]
+        }
       };
 
       const signature = btoa(JSON.stringify(signatureData));
