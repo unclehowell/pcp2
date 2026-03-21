@@ -60,8 +60,12 @@ async function startServer() {
           date_of_birth: payload.date_of_birth,
           phone: payload.phone,
           email: payload.email,
-          session_id: payload.session_id,
-          addresses: payload.addresses
+          addresses: [{
+            buildingNumber: data.buildingNumber || '',
+            thoroughfare: data.thoroughfare || '',
+            townOrCity: data.townOrCity || '',
+            postcode: data.postcode || ''
+          }]
         };
         payload.signature = btoa(JSON.stringify(signaturePayload));
       }
