@@ -46,8 +46,6 @@ export async function onRequestPost(context) {
         date_of_birth: payload.date_of_birth,
         phone: payload.phone,
         email: payload.email,
-        client_ip: payload.client_ip,
-        user_agent: payload.user_agent,
         session_id: payload.session_id,
         addresses: payload.addresses
       };

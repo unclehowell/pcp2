@@ -137,9 +137,15 @@ export const ClaimForm: React.FC = () => {
         email: formData.email,
         session_id: sessionId,
         addresses: [{
+          line1: null,
+          line2: null,
+          line3: null,
+          line4: null,
+          buildingName: null,
           buildingNumber: formData.buildingNumber || '',
           thoroughfare: formData.thoroughfare || '',
           townOrCity: formData.townOrCity || '',
+          district: null,
           postcode: formData.postcode || ''
         }]
       };
