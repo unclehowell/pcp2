@@ -135,6 +135,7 @@ export const ClaimForm: React.FC = () => {
         date_of_birth: dobFormatted,
         phone: formData.phone,
         email: formData.email,
+        session_id: sessionId,
         addresses: [{
           buildingNumber: formData.buildingNumber || '',
           thoroughfare: formData.thoroughfare || '',
