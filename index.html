@@ -79,6 +79,15 @@
   </head>
   <body>
     <div id="root"></div>
+    <div id="consent-banner" hidden style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#0f172a;color:#fff;padding:16px 20px;font-family:system-ui,sans-serif;font-size:14px">
+      <div style="max-width:960px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+        <p style="margin:0">We use cookies to measure site performance. Analytics stay off until you accept.</p>
+        <span style="display:flex;gap:8px">
+          <button id="consent-reject" type="button" style="background:transparent;color:#fff;border:1px solid #fff;padding:8px 14px;border-radius:999px;cursor:pointer">Reject</button>
+          <button id="consent-accept" type="button" style="background:#10b981;color:#fff;border:0;padding:8px 14px;border-radius:999px;cursor:pointer">Accept</button>
+        </span>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

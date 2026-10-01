@@ -58,7 +58,7 @@ export async function onRequestPost(context) {
     
     // Add ViewThru specific fields
     payload.device_session_id = session_id;
-    payload.account_creation_url = 'https://pcp2.pages.dev/claim';
+    payload.account_creation_url = 'https://car.financecheque.uk/claim';
 
     console.log("--- OUTGOING REQUEST TO UPSTREAM ---");
     // Using the real endpoint we had before, but with the new fields
